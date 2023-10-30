@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "6dce79c4ff944acf895448335c1eb3aa6def41eed3e4dbd66a2ce0353f4f6197";
+    private static final String SECRET_KEY = "23672d092b276766624298b3c0d6168d80350a6cbebc1415e2b1435c74edf91d";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -49,7 +49,7 @@ public class JwtService {
 
     public Boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired()
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
@@ -71,6 +71,6 @@ public class JwtService {
 
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes)
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
