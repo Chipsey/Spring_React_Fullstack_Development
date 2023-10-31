@@ -10,6 +10,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -18,6 +21,9 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    public List<User> fetchUsers() {
+        return repository.findAll();
+    }
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
@@ -29,9 +35,16 @@ public class AuthenticationService {
                 .build();
         repository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+//        return AuthenticationResponse.builder()
+//                .token(jwtToken)
+//                .build();
+        AuthenticationResponse response = new AuthenticationResponse();
+        response.setName(user.getFirstName() + " " + user.getLastName());
+        response.setEmail(user.getEmail());
+        response.setToken(jwtToken);
+        response.setRole(String.valueOf(user.getRole()));
+
+        return response;
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -44,9 +57,44 @@ public class AuthenticationService {
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+//        return AuthenticationResponse.builder()
+//                .token(jwtToken)
+//                .build();
+        AuthenticationResponse response = new AuthenticationResponse();
+        response.setName(user.getFirstName() + " " + user.getLastName());
+        response.setEmail(user.getEmail());
+        response.setToken(jwtToken);
+        response.setRole(String.valueOf(user.getRole()));
+
+        return response;
+    }
+
+
+    public User updateUserProfile(Long userId, User updatedUser) {
+        Optional<User> optionalUser = repository.findById(Math.toIntExact(userId));
+
+        if (optionalUser.isPresent()) {
+            User existingUser = optionalUser.get();
+
+            existingUser.setFirstName(updatedUser.getFirstName());
+            existingUser.setLastName(updatedUser.getLastName());
+
+            repository.save(existingUser);
+
+            return existingUser;
+        }
+
+        return null;
+    }
+
+
+    public void deleteUser(Long userId) {
+        Boolean exist = repository.existsById(Math.toIntExact(userId));
+        if (exist) {
+            repository.deleteById(Math.toIntExact(userId));
+        } else {
+            throw new UserNotFoundException("User with ID " + userId + " not found");
+        }
     }
 
 }
