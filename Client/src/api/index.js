@@ -17,12 +17,16 @@ export const signIn = (formData) =>
   API.post("http://localhost:8080/api/v1/auth/authenticate", formData);
 export const signUp = (formData) =>
   API.post("http://localhost:8080/api/v1/auth/register", formData);
-export const fetchUsers = () => API.get("http://localhost:8080/api/v1/auth/fetch-users");
-export const deleteUser = (id) => API.get(`http://localhost:8080/api/v1/auth/delete-user/${id}`);
-export const updateProfile = (id) => API.get(`http://localhost:8080/api/v1/auth/update-profile/${id}`);
+export const fetchUsers = () =>
+  API.get("http://localhost:8080/api/v1/auth/fetch-users");
+export const deleteUser = (id) =>
+  API.delete(`http://localhost:8080/api/v1/auth/delete-user/${id}`);
+export const updateProfile = (id) =>
+  API.put(`http://localhost:8080/api/v1/auth/update-profile/${id}`);
 
 //Products
-export const fetchProducts = () => API.get("http://localhost:8080/api/v1/products");
+export const fetchProducts = () =>
+  API.get("http://localhost:8080/api/v1/products");
 export const fetchProductById = (id) =>
   API.get(`http://localhost:8080/products/${id}`);
 export const fetchColorsById = (id) =>
@@ -38,6 +42,9 @@ export const addProduct = (productData) =>
 export const updateProduct = (id, updatedProductData) =>
   API.put(`http://localhost:8080/products/update/${id}`, updatedProductData);
 export const updateDetails = (id, updatedProductData) =>
-  API.put(`http://localhost:8080/products/updateDetails/${id}`, updatedProductData);
+  API.put(
+    `http://localhost:8080/products/updateDetails/${id}`,
+    updatedProductData
+  );
 export const addDiscount = (id, discountData) =>
   API.post(`http://localhost:8080/products/addDscount/${id}`, discountData);
