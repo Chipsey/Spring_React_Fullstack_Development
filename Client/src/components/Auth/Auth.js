@@ -18,6 +18,7 @@ const initialState = {
   firstname: "",
   lastname: "",
   email: "",
+  address: "",
   password: "",
   confirmPassword: "",
 };
@@ -164,6 +165,11 @@ function Auth() {
                   label="Last Name"
                   handleChange={handleChange}
                   half
+                />
+                <Input
+                  name="address"
+                  label="Address"
+                  handleChange={handleChange}
                 />
               </>
             )}

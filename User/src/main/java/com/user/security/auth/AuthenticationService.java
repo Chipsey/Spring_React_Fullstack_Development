@@ -30,6 +30,7 @@ public class AuthenticationService {
                 .firstName(request.getFirstname())
                 .lastName(request.getLastname())
                 .email(request.getEmail())
+                .address(request.getAddress())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();
@@ -42,6 +43,7 @@ public class AuthenticationService {
         response.setName(user.getFirstName() + " " + user.getLastName());
         response.setEmail(user.getEmail());
         response.setToken(jwtToken);
+        response.setAddress(user.getAddress());
         response.setRole(String.valueOf(user.getRole()));
 
         return response;
@@ -63,6 +65,7 @@ public class AuthenticationService {
         AuthenticationResponse response = new AuthenticationResponse();
         response.setName(user.getFirstName() + " " + user.getLastName());
         response.setEmail(user.getEmail());
+        response.setAddress(user.getAddress());
         response.setToken(jwtToken);
         response.setRole(String.valueOf(user.getRole()));
 

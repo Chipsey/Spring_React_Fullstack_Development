@@ -7,8 +7,6 @@ import { fetchProducts } from "../../actions/product";
 
 import Grid from "@mui/system/Unstable_Grid";
 import styled from "@mui/system/styled";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import GppGoodRoundedIcon from "@mui/icons-material/GppGoodRounded";
 
@@ -68,7 +66,7 @@ const Home = () => {
         <Grid item xs={12}>
           <div className="image-container">
             <img
-              src="https://images.pexels.com/photos/3315286/pexels-photo-3315286.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              src="https://png.pngtree.com/thumb_back/fh260/background/20230518/pngtree-the-candy-shop-at-gordon-s-wizarding-world-image_2536653.jpg"
               alt="Background"
               style={{ width: "100%" }}
               className="image-element"
@@ -104,14 +102,13 @@ const Home = () => {
                     to={`/explore/${item.id}`}
                     style={{ textDecoration: "none" }}
                   >
-                    <img src={item.coverimage} alt={item.name} />
+                    <img src={item.imageUrls[1]} alt={item.name} />
                     <Typography
                       variant="body2"
-                      color="text.primary"
                       className="new-arrivals-title"
                       color="white"
                     >
-                      {item.product_name}
+                      {item.name}
                     </Typography>
                   </Link>
                 </SwiperSlide>

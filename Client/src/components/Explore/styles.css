@@ -17,6 +17,16 @@
   margin-bottom: 10px;
 }
 
+.product--background {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: -100;
+  opacity: 0.1;
+  filter: blur(10px);
+}
+
 .product-list-container {
   margin-top: 150px;
 }

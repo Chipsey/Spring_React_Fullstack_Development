@@ -1,122 +1,66 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  Typography,
-  Paper,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Input,
-} from "@mui/material";
-// import FileBase from "react-file-base64";
+import { TextField, Button, Typography, Paper } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-
 import "./styles.css";
 import { addProduct, updateProduct } from "../../actions/product";
-
 import { validateProductForm } from "../../validation/formValidation";
 
 const AddProductForm = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
-
-  // const sizeOptions = ["Small", "Medium", "Large", "XL", "XXL"]; // Add your size options here
-  const categoryOptions = [
-    "T-Shirts",
-    "Jeans",
-    "Dresses",
-    "Shoes",
-    "Accessories",
-    "Tops",
-    "Bottoms",
-    "Outerwear",
-    "Activewear",
-    "Swimwear",
-    "Lingerie",
-    "Sleepwear",
-    "Sportswear",
-    "Formal Wear",
-    "Casual Wear",
-    "Workwear",
-    "Maternity Wear",
-    "Vintage Clothing",
-    "Bohemian Clothing",
-    "Streetwear",
-    "Punk Clothing",
-    "Goth Clothing",
-    "Preppy Clothing",
-    "Urban Clothing",
-    "Ethical and Sustainable Clothing",
-    "Shoes",
-    "Accessories",
-  ]; // Categories for a clothing shop
-  const genderOptions = ["Men", "Women", "Unisex"]; // Gender options
-
   const [productData, setProductData] = useState({
-    product_name: "",
+    name: "",
     price: "",
     description: "",
-    supplier: "",
-    category: "",
-    gender: "",
-    coverImage: "",
+    quantity: "",
+    imageUrls: [], // Change to an array
   });
 
-  // Get currentId and other data from Redux store
   const currentId = useSelector((state) => state.products.currentId);
-
   const product = useSelector((state) =>
     currentId ? state.products.find((p) => p.id === currentId) : null
   );
-
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (product) setProductData(product);
   }, [product]);
 
-  const handleSubmit = (error) => {
-    try {
-      error.preventDefault();
-      const formErrors = validateProductForm(productData);
-      setErrors(formErrors);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formErrors = validateProductForm(productData);
+    setErrors(formErrors);
 
-      // If there are errors, stop form submission
-      if (Object.keys(formErrors).length > 0) {
-        return;
-      }
-
-      if (currentId) {
-        dispatch(updateProduct(currentId, productData));
-      } else {
-        dispatch(addProduct(productData));
-      }
-
-      if (Object.keys(formErrors).length > 0) {
-        console.log(errors);
-        return;
-      }
-
-      navigate("/addProductDetails");
-
-      clear();
-    } catch (error) {
-      console.error(error);
+    if (Object.keys(formErrors).length > 0) {
+      return;
     }
+
+    if (currentId) {
+      dispatch(updateProduct(currentId, productData));
+    } else {
+      dispatch(addProduct(productData));
+    }
+
+    navigate("/addProductDetails");
+    clear();
+  };
+
+  const handleImageUrlsChange = (event) => {
+    const imageUrlsArray = event.target.value
+      .split(", ")
+      .map((url) => url.trim());
+
+    setProductData({ ...productData, imageUrls: imageUrlsArray });
   };
 
   const clear = () => {
     setProductData({
-      product_name: "",
+      name: "",
       price: "",
       description: "",
-      supplier: "",
-      category: "",
-      gender: "",
-      coverImage: "",
+      quantity: "",
+      imageUrls: [],
     });
   };
 
@@ -149,19 +93,18 @@ const AddProductForm = () => {
 
         <TextField
           sx={{ my: 0.5 }}
-          name="product_name"
+          name="name"
           variant="outlined"
           label="Product Name"
           fullWidth
-          value={productData.product_name}
+          value={productData.name}
           onChange={(e) =>
-            setProductData({ ...productData, product_name: e.target.value })
+            setProductData({ ...productData, name: e.target.value })
           }
-          error={Boolean(errors.product_name)}
-          helperText={errors.product_name}
+          error={Boolean(errors.name)}
+          helperText={errors.name}
           onFocus={() => {
-            // Clear the error for this field when it's focused
-            setErrors({ ...errors, product_name: "" });
+            setErrors({ ...errors, name: "" });
           }}
         />
 
@@ -186,35 +129,33 @@ const AddProductForm = () => {
         <TextField
           sx={{ my: 0.5 }}
           multiline
-          name="coverImage"
+          name="imageUrls"
           variant="outlined"
-          label="Cover Image URL"
+          label='Image URLS (link.jpg, link.jpg)'
           fullWidth
-          value={productData.coverImage}
-          onChange={(e) =>
-            setProductData({ ...productData, coverImage: e.target.value })
-          }
-          error={Boolean(errors.coverImage)}
-          helperText={errors.coverImage}
+          value={productData.imageUrls.join(", ")}
+          onChange={handleImageUrlsChange}
+          error={Boolean(errors.imageUrls)}
+          helperText={errors.imageUrls}
           onFocus={() => {
-            setErrors({ ...errors, coverImage: "" });
+            setErrors({ ...errors, imageUrls: "" });
           }}
         />
 
         <TextField
           sx={{ my: 0.5 }}
-          name="supplier"
+          name="quantity"
           variant="outlined"
-          label="Supplier"
+          label="Quantity"
           fullWidth
-          value={productData.supplier}
+          value={productData.quantity}
           onChange={(e) =>
-            setProductData({ ...productData, supplier: e.target.value })
+            setProductData({ ...productData, quantity: e.target.value })
           }
-          error={Boolean(errors.supplier)}
-          helperText={errors.supplier}
+          error={Boolean(errors.quantity)}
+          helperText={errors.quantity}
           onFocus={() => {
-            setErrors({ ...errors, supplier: "" });
+            setErrors({ ...errors, quantity: "" });
           }}
         />
 
@@ -234,54 +175,6 @@ const AddProductForm = () => {
             setErrors({ ...errors, price: "" });
           }}
         />
-
-        <FormControl sx={{ my: 0.5 }} fullWidth>
-          <InputLabel htmlFor="category-select">Category</InputLabel>
-          <Select
-            labelId="category-select"
-            id="category-select"
-            value={productData.category}
-            onChange={(e) =>
-              setProductData({ ...productData, category: e.target.value })
-            }
-            input={<Input />}
-            error={Boolean(errors.category)}
-            helperText={errors.category}
-            onFocus={() => {
-              setErrors({ ...errors, category: "" });
-            }}
-          >
-            {categoryOptions.map((category) => (
-              <MenuItem key={category} value={category}>
-                {category}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl sx={{ my: 0.5 }} fullWidth>
-          <InputLabel htmlFor="gender-select">Gender</InputLabel>
-          <Select
-            labelId="gender-select"
-            id="gender-select"
-            value={productData.gender}
-            onChange={(e) =>
-              setProductData({ ...productData, gender: e.target.value })
-            }
-            input={<Input />}
-            error={Boolean(errors.gender)}
-            helperText={errors.gender}
-            onFocus={() => {
-              setErrors({ ...errors, gender: "" });
-            }}
-          >
-            {genderOptions.map((gender) => (
-              <MenuItem key={gender} value={gender}>
-                {gender}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
 
         <Button
           sx={{ my: 0.5 }}

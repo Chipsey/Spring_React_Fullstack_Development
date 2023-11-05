@@ -48,7 +48,7 @@ const ProductList = () => {
   return (
     <div className="product-list-container">
       <Grid container spacing={3}>
-        <Grid item xs={3} sm={3} md={3} lg={3} xl={3}></Grid>
+        <Grid item xs={2} sm={2} md={2} lg={2} xl={2}></Grid>
         <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
           <Grid container spacing={3}>
             {currentItems.map((product) => (
@@ -65,8 +65,8 @@ const ProductList = () => {
                     <CardMedia
                       component="img"
                       style={{ objectFit: "cover", height: "350px" }}
-                      image={product.coverimage}
-                      alt={product.product_name}
+                      image={product.imageUrls[1]}
+                      alt={product.name}
                     />
                     <CardContent>
                       <Typography
@@ -83,7 +83,7 @@ const ProductList = () => {
                         }}
                         className="explore--card--name"
                       >
-                        {product.product_name}
+                        {product.name}
                       </Typography>
                       <Typography
                         variant="body2"
@@ -96,7 +96,7 @@ const ProductList = () => {
                         }}
                         className="explore--card--details"
                       >
-                        {product.category} • {product.gender}
+                        {product.description}
                         <br />
                         <Typography
                           variant="h7"
@@ -109,7 +109,7 @@ const ProductList = () => {
                         <br />
                         {/* Likes: {product.likes}
                         <br /> */}
-                        {product.color}
+                        {/*{product.color}*/}
                       </Typography>
                       <BottomNavigation
                         showLabels
