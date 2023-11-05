@@ -11,34 +11,26 @@ import {
   CardContent,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../../actions/product";
+import {
+  fetchProducts,
+  updateDetails,
+  deleteProduct,
+} from "../../actions/product"; // Make sure to import `updateDetails`
+import { Link } from "react-router-dom";
 
 import "./styles.css";
-import { updateDetails, deleteProduct } from "../../actions/product";
 
 const AddProductInfoForm = () => {
   const [errors, setErrors] = useState({});
   const products = useSelector((state) => state.products);
 
   const [productData, setProductData] = useState({
-    product_name: "",
+    name: "",
     price: "",
     description: "",
-    supplier: "",
-    category: "",
-    gender: "",
-    color: "",
-    color_code: "",
-    selectedFile: "",
+    imageUrls: [],
     quantity: "",
-    xsq: "",
-    sq: "",
-    mq: "",
-    lq: "",
-    xlq: "",
-    xxlq: "",
-    txlq: "",
-    fxlq: "",
+    addQuantity: "",
   });
 
   const [currentId, setCurrentId] = useState(null);
@@ -52,11 +44,9 @@ const AddProductInfoForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Define an array to hold error messages
     const formErrors = [];
 
-    // Check for required fields
-    if (!productData.product_name) {
+    if (!productData.name) {
       formErrors.push("Product Name is required");
     }
     if (!productData.description) {
@@ -65,58 +55,55 @@ const AddProductInfoForm = () => {
     if (!productData.price) {
       formErrors.push("Price is required");
     }
-    if (!productData.color) {
-      formErrors.push("Color is required");
+    if (!productData.addQuantity) {
+      productData.addQuantity = 0;
     }
-    if (!productData.color_code) {
-      formErrors.push("Color Code is required");
-    }
-    // Add additional required fields here
 
-    // If there are any errors, set the errors state and return
     if (formErrors.length > 0) {
       setErrors(formErrors);
       return;
     }
 
-    // If no errors, proceed with form submission
-    dispatch(updateDetails(currentId, productData));
+    const newQuantity =
+      parseInt(productData.quantity) + parseInt(productData.addQuantity);
+
+    dispatch(
+      updateDetails(currentId, { ...productData, quantity: newQuantity })
+    );
     clear();
   };
 
   const clear = () => {
     setProductData({
-      product_name: "",
+      name: "",
       price: "",
       description: "",
-      supplier: "",
-      category: "",
-      gender: "",
-      color: "",
-      color_code: "",
-      selectedFile: "",
+      imageUrls: [],
       quantity: "",
-      xsq: "",
-      sq: "",
-      mq: "",
-      lq: "",
-      xlq: "",
-      xxlq: "",
-      txlq: "",
-      fxlq: "",
+      addQuantity: "",
     });
   };
 
   const handleCardClick = (clickedProduct) => {
     setProductData({
-      product_name: clickedProduct.product_name,
+      name: clickedProduct.name,
       price: clickedProduct.price,
       description: clickedProduct.description,
-      category: clickedProduct.category, // Populate category and gender when clicking a card
-      gender: clickedProduct.gender,
+      imageUrls: clickedProduct.imageUrls, // Populate imageUrls correctly
+      quantity: clickedProduct.quantity,
     });
 
     setCurrentId(clickedProduct.id);
+  };
+
+  const addImageURL = () => {
+    const newImageURL = prompt("Enter a new image URL"); // You can use a better UI for this
+    if (newImageURL) {
+      setProductData((prevData) => ({
+        ...prevData,
+        imageUrls: [...prevData.imageUrls, newImageURL],
+      }));
+    }
   };
 
   return (
@@ -138,7 +125,7 @@ const AddProductInfoForm = () => {
             marginBottom: "20px",
           }}
         >
-          {currentId ? "Add Details" : "Select Product"}
+          {currentId ? "Add Details" : "Edit/Add Products"}
         </Typography>
         <Paper
           className="paper"
@@ -165,14 +152,14 @@ const AddProductInfoForm = () => {
               label="Product Name"
               fullWidth
               required
-              value={productData.product_name}
+              value={productData.name}
               onChange={(e) =>
-                setProductData({ ...productData, product_name: e.target.value })
+                setProductData({ ...productData, name: e.target.value })
               }
-              error={Boolean(errors.product_name)}
-              helperText={errors.product_name}
+              error={Boolean(errors.name)}
+              helperText={errors.name}
               onFocus={() => {
-                setErrors({ ...errors, product_name: "" });
+                setErrors({ ...errors, name: "" });
               }}
             />
 
@@ -194,10 +181,42 @@ const AddProductInfoForm = () => {
                 setErrors({ ...errors, description: "" });
               }}
             />
-
             <TextField
               sx={{ my: 0.5 }}
               multiline
+              name="imageUrls"
+              variant="outlined"
+              label="ImageUrls"
+              fullWidth
+              required
+              value={productData.imageUrls.join(", ")}
+              onChange={(e) =>
+                setProductData({
+                  ...productData,
+                  imageUrls: e.target.value
+                    .split(", ")
+                    .filter((url) => url.trim() !== ""),
+                })
+              }
+            />
+            <Button
+              sx={{ my: 0 }}
+              size="small"
+              onClick={addImageURL}
+              style={{
+                border: "0.5px solid",
+                borderRadius: "10px",
+                color: "black",
+                margin: "10px 0px",
+                fontSize: "smaller",
+              }}
+              fullWidth
+            >
+              CLICK TO ADD MORE IMAGES
+            </Button>
+
+            <TextField
+              sx={{ my: 0.5 }}
               name="price"
               variant="outlined"
               label="Price"
@@ -213,164 +232,39 @@ const AddProductInfoForm = () => {
                 setErrors({ ...errors, price: "" });
               }}
             />
+
             <TextField
               sx={{ my: 0.5 }}
-              multiline
-              name="color"
+              name="quantity"
               variant="outlined"
-              style={{ marginTop: "30px" }}
-              label="Color"
+              label="Quantity"
               fullWidth
               required
-              value={productData.color}
+              value={productData.quantity}
               onChange={(e) =>
-                setProductData({ ...productData, color: e.target.value })
+                setProductData({ ...productData, quantity: e.target.value })
               }
-              error={Boolean(errors.color)}
-              helperText={errors.color}
+              error={Boolean(errors.quantity)}
+              helperText={errors.quantity}
               onFocus={() => {
-                setErrors({ ...errors, color: "" });
+                setErrors({ ...errors, quantity: "" });
               }}
             />
             <TextField
-              sx={{ my: 0.5 }}
-              multiline
-              name="color_code"
+              sx={{ my: 3 }}
+              name="addQuantity"
               variant="outlined"
-              style={{ marginTop: "30px" }}
-              label="ColorCode"
+              label="addQuantity"
               fullWidth
-              required
-              value={productData.color_code}
+              value={productData.addQuantity}
               onChange={(e) =>
-                setProductData({ ...productData, color_code: e.target.value })
+                setProductData({ ...productData, addQuantity: e.target.value })
               }
-              error={Boolean(errors.color_code)}
-              helperText={errors.color_code}
+              error={Boolean(errors.addQuantity)}
+              helperText={errors.addQuantity}
               onFocus={() => {
-                setErrors({ ...errors, color_code: "" });
+                setErrors({ ...errors, addQuantity: "" });
               }}
-            />
-            <TextField
-              sx={{ my: 0.5 }}
-              multiline
-              name="selectedFile"
-              variant="outlined"
-              label="Image URL"
-              fullWidth
-              value={productData.selectedFile}
-              onChange={(e) =>
-                setProductData({ ...productData, selectedFile: e.target.value })
-              }
-              error={Boolean(errors.selectedFile)}
-              helperText={errors.selectedFile}
-              onFocus={() => {
-                setErrors({ ...errors, selectedFile: "" });
-              }}
-            />
-
-            <TextField
-              sx={{ my: 0.5 }}
-              multiline
-              fullWidth
-              name="xsq"
-              variant="outlined"
-              label="Extra Small Quantity"
-              value={productData.xsq}
-              onChange={(e) =>
-                setProductData({ ...productData, xsq: e.target.value })
-              }
-            />
-
-            <TextField
-              sx={{ my: 0.5 }}
-              multiline
-              fullWidth
-              name="sq"
-              variant="outlined"
-              label="Small Quantity"
-              value={productData.sq}
-              onChange={(e) =>
-                setProductData({ ...productData, sq: e.target.value })
-              }
-            />
-
-            <TextField
-              sx={{ my: 0.5 }}
-              multiline
-              fullWidth
-              name="mq"
-              variant="outlined"
-              label="Medium Quantity"
-              value={productData.mq}
-              onChange={(e) =>
-                setProductData({ ...productData, mq: e.target.value })
-              }
-            />
-
-            <TextField
-              sx={{ my: 0.5 }}
-              multiline
-              fullWidth
-              name="lq"
-              variant="outlined"
-              label="Large Quantity"
-              value={productData.lq}
-              onChange={(e) =>
-                setProductData({ ...productData, lq: e.target.value })
-              }
-            />
-
-            <TextField
-              sx={{ my: 0.5 }}
-              multiline
-              fullWidth
-              name="xlq"
-              variant="outlined"
-              label="XL Quantity"
-              value={productData.xlq}
-              onChange={(e) =>
-                setProductData({ ...productData, xlq: e.target.value })
-              }
-            />
-
-            <TextField
-              sx={{ my: 0.5 }}
-              multiline
-              fullWidth
-              name="xxlq"
-              variant="outlined"
-              label="XXL Quantity"
-              value={productData.xxlq}
-              onChange={(e) =>
-                setProductData({ ...productData, xxlq: e.target.value })
-              }
-            />
-
-            <TextField
-              sx={{ my: 0.5 }}
-              multiline
-              fullWidth
-              name="txlq"
-              variant="outlined"
-              label="3XL Quantity"
-              value={productData.txlq}
-              onChange={(e) =>
-                setProductData({ ...productData, txlq: e.target.value })
-              }
-            />
-
-            <TextField
-              sx={{ my: 0.5 }}
-              multiline
-              fullWidth
-              name="fxlq"
-              variant="outlined"
-              label="4XL Quantity"
-              value={productData.fxlq}
-              onChange={(e) =>
-                setProductData({ ...productData, fxlq: e.target.value })
-              }
             />
           </form>
         </Paper>
@@ -384,7 +278,7 @@ const AddProductInfoForm = () => {
           style={{
             background: "black",
             borderRadius: "20px",
-            marginTop: "30px",
+            marginTop: "10px",
             color: "white",
             fontSize: "small",
           }}
@@ -392,7 +286,7 @@ const AddProductInfoForm = () => {
           {currentId ? "Update" : "Select"}
         </Button>
         <Button
-          sx={{ my: 0.5 }}
+          sx={{ my: 0 }}
           variant="filled"
           color="secondary"
           size="small"
@@ -407,6 +301,18 @@ const AddProductInfoForm = () => {
         >
           Clear
         </Button>
+        <Link to="/addproduct" style={{ textDecoration: "none" }}>
+          <Typography
+            fullWidth
+            style={{
+              fontSize: "13px",
+              fontWeight: "600",
+            }}
+            variant="filled"
+          >
+            + ADD PRODUCTS +
+          </Typography>
+        </Link>
       </Paper>
       <Box
         sx={{
@@ -416,8 +322,10 @@ const AddProductInfoForm = () => {
           justifyContent: "center",
           alignItems: "center",
           width: "100%",
+          paddingY: "50px",
           mt: 2,
         }}
+        style={{ background: "#ebebeb" }}
       >
         {products.map((product) => (
           <Card
@@ -425,17 +333,18 @@ const AddProductInfoForm = () => {
             style={{
               margin: "10px",
               maxWidth: "300px",
+              height: "400px",
             }}
           >
             <CardMedia
               component="img"
-              alt={product.product_name}
-              height="140"
-              image={product.coverimage}
+              alt={product.name}
+              height="150"
+              image={product.imageUrls[0]}
             />
             <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                {product.product_name}
+              <Typography gutterBottom variant="h6" component="div">
+                {product.name}
               </Typography>
               <Typography
                 variant="body2"
@@ -444,22 +353,49 @@ const AddProductInfoForm = () => {
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                  maxWidth: "100%", // Ensure the text doesn't overflow the container
+                  maxWidth: "100%",
                 }}
               >
                 {product.description}
+              </Typography>
+
+              <Typography
+                variant="h6"
+                color="text.primary"
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  fontWeight: "500",
+                }}
+              >
+                LKR {product.price}.00
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.primary"
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  fontWeight: "500",
+                }}
+              >
+                Available Quantity: {product.quantity}
               </Typography>
             </CardContent>
             <Button
               onClick={() => handleCardClick(product)}
               size="small"
-              variant="outlined"
               style={{
                 background: "black",
-                borderRadius: "20px",
-                marginBottom: "10px",
+                marginBottom: "0px",
                 color: "white",
                 fontSize: "small",
+                borderRadius: "0",
+                position: "relative",
+                width: "50%",
+                height: "50px",
               }}
             >
               Edit
@@ -467,14 +403,15 @@ const AddProductInfoForm = () => {
             <Button
               onClick={() => dispatch(deleteProduct(product.id))}
               size="small"
-              variant="outlined"
               style={{
-                background: "black",
-                borderRadius: "20px",
-                marginBottom: "10px",
-                marginLeft: "10px",
+                position: "relative",
+                width: "50%",
+                marginBottom: "0px",
+                borderRadius: "0",
                 color: "white",
+                background: "rgb(138, 56, 56)",
                 fontSize: "small",
+                height: "50px",
               }}
             >
               Delete

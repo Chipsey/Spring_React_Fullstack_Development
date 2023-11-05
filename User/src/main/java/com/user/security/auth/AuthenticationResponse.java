@@ -16,6 +16,7 @@ public class AuthenticationResponse {
     private String name;
     private String email;
     private String role;
+    private String address;
 
     public void setName(String s) {
         this.name = s;
@@ -27,5 +28,9 @@ public class AuthenticationResponse {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
