@@ -1,8 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductById } from "../../actions/product";
-import { Typography, Grid, Container, Box } from "@mui/material";
+import {
+  Typography,
+  Grid,
+  Container,
+  Box,
+  TextField,
+  Button,
+} from "@mui/material";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "./styles.css";
@@ -15,11 +22,30 @@ import "swiper/css/navigation";
 import { EffectCoverflow, Pagination, Navigation } from "swiper/modules";
 import Loading from "../Loading/Loading";
 import ProductList from "./Explore";
+import { addOrder } from "../../actions/order";
+
+const initialState = {
+  customerEmail: "",
+  quantity: null,
+  productId: null,
+  unitPrice: null,
+  totalPrice: null,
+  orderDate: null,
+  productName: "",
+  address: "",
+};
 
 const ImageCarousel = () => {
   const dispatch = useDispatch();
-  const { id } = useParams();
+
+  const userData = useSelector((state) => state.auth.authData);
   const product = useSelector((state) => state.singleProduct);
+
+  const isSignup = userData !== null ? true : false;
+
+  const { id } = useParams();
+
+  const [formData, setFormData] = useState(initialState);
 
   useEffect(() => {
     dispatch(fetchProductById(id));
@@ -28,6 +54,32 @@ const ImageCarousel = () => {
   if (!product.id) {
     return <Loading />;
   }
+
+  const handleSubmit = () => {
+    // setFormData({
+    //   ...formData,
+    //   productId: product.id,
+    //   customerId: userData.id,
+    //   address: userData.address,
+    // });
+    dispatch(addOrder(formData));
+  };
+
+  const handleChange = (e) => {
+    const currentDate = new Date();
+    const quantity = parseInt(e.target.value, 10);
+    setFormData({
+      ...formData,
+      productId: product.id,
+      customerEmail: userData.email,
+      address: userData.address,
+      unitPrice: product.price,
+      totalPrice: product.price * quantity,
+      orderDate: currentDate,
+      productName: product.name,
+      quantity: quantity,
+    });
+  };
   return (
     <div
       style={{
@@ -160,6 +212,72 @@ const ImageCarousel = () => {
             >
               LKR {product.price}.00
             </Typography>
+
+            <form onSubmit={handleSubmit}>
+              {isSignup ? (
+                <>
+                  <TextField
+                    name="quantity"
+                    label="Quantity"
+                    onChange={handleChange}
+                    variant="outlined"
+                    style={{ marginTop: "30px" }}
+                    required
+                    half
+                  />
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    style={{
+                      maxWidth: "100%",
+                      fontWeight: "500",
+                      color: "grey",
+                      marginTop: "20px",
+                      fontSize: "15px",
+                    }}
+                    className="explore--card--name"
+                  >
+                    Ordering Address : {userData.address}
+                  </Typography>
+                  <Button
+                    type="submit"
+                    size="small"
+                    style={{
+                      position: "relative",
+                      width: "50%",
+                      borderRadius: "7px",
+                      color: "white",
+                      background: "rgb(56, 138, 56)",
+                      fontSize: "15px",
+                      height: "50px",
+                    }}
+                  >
+                    ADD ORDER
+                  </Button>
+                </>
+              ) : (
+                <Typography
+                  gutterBottom
+                  variant="body2"
+                  component="div"
+                  style={{
+                    fontFamily: "playlist",
+                    color: "black",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "100%",
+                    fontWeight: "400",
+                    marginTop: "30px",
+                    fontSize: "20px",
+                  }}
+                  className="explore--card--name"
+                >
+                  SignIn to Continue the Order Process!!
+                </Typography>
+              )}
+            </form>
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>

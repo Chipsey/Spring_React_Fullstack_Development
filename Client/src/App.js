@@ -10,6 +10,7 @@ import AddProductInfoForm from "./components/AddProductDetails/AddProductDetails
 import ExploreProduct from "./components/Explore/ExploreProduct";
 import AddProductDiscount from "./components/AddDiscount/AddProductDiscount";
 import Users from "./components/Auth/Users";
+import Order from "./components/Order/Order";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/addProductDetails" element={<AddProductInfoForm />} />
           <Route path="/addProductDiscount" element={<AddProductDiscount />} />
           <Route path="/manage-users" element={<Users />} />
+          <Route path="/orders" element={<Order />} />
         </Routes>
       </Router>
     </div>

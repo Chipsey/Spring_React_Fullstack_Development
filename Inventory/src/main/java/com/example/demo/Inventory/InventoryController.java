@@ -1,5 +1,6 @@
 package com.example.demo.Inventory;
 
+import jakarta.persistence.criteria.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,5 +41,15 @@ public class InventoryController {
     public void updateInventory(@PathVariable("inventoryId") Long inventoryId,
                               @RequestBody Inventory inventory) {
         inventoryService.updateInventory(inventoryId, inventory.getName(), inventory.getPrice(), String.valueOf(inventory.getQuantity()), inventory.getImageUrls());
+    }
+
+
+
+
+    //Ordering Process
+
+    @PostMapping("/add-new-order")
+    public void addNewOrder(@RequestBody OrderRequest orderRequest) {
+        inventoryService.addNewOrder(orderRequest);
     }
 }

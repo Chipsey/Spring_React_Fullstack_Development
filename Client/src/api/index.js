@@ -48,3 +48,9 @@ export const updateDetails = (id, updatedProductData) =>
   );
 export const addDiscount = (id, discountData) =>
   API.post(`http://localhost:8080/products/addDscount/${id}`, discountData);
+
+export const addOrder = (orderData) =>
+  API.post("http://localhost:8082/api/v1/order/add", orderData);
+
+export const fetchOrders = () =>
+  API.get("http://localhost:8082/api/v1/order/all");
