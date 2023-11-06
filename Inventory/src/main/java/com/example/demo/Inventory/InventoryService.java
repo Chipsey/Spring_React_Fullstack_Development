@@ -71,4 +71,18 @@ public class InventoryService {
         }
         inventory.setImageUrls(imageUrls);
     }
+
+
+    //Order Process
+
+    @Transactional
+    public void addNewOrder(OrderRequest orderRequest) {
+        Inventory inventory = inventoryRepository.findById(orderRequest.getProductId())
+                .orElseThrow(() -> new IllegalStateException("Inventory with id: " + orderRequest.getProductId() + " does not exist"));
+
+        long newQuantity = inventory.getQuantity() - orderRequest.getQuantity();
+        System.out.println(newQuantity);
+
+        inventory.setQuantity(newQuantity);
+    }
 }

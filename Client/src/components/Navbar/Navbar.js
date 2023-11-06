@@ -202,12 +202,12 @@ const Navbar = () => {
               alignItems: "center", // Center horizontally
             }}
           >
-            <Item to={userData.role === "ADMIN" ? "addproductdetails" : "cart"}>
+            <Item to={userData.role === "ADMIN" ? "addproductdetails" : "orders"}>
               <ShoppingCartIcon
                 style={{ marginRight: "5px", color: "black", fontSize: "15px" }}
               />
               <span className="icon-text">
-                {userData.role === "ADMIN" ? "INVENTORY" : "CART"}
+                {userData.role === "ADMIN" ? "INVENTORY" : "ORDERS"}
               </span>
             </Item>
           </Grid>

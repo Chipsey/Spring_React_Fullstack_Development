@@ -1,0 +1,6 @@
+com/example/demo/DemoApplication.class
+com/example/demo/Inventory/InventoryController.class
+com/example/demo/Inventory/InventoryRepository.class
+com/example/demo/Inventory/InventoryService.class
+com/example/demo/config/CorsConfig.class
+com/example/demo/Inventory/Inventory.class
