@@ -3,7 +3,7 @@ import {
   ADD_ORDER,
   DELETE_ORDER,
   UPDATE_ORDER,
-  FETCH_ORDER_BY_ID,
+  FETCH_ORDER_BY_EMAIL,
 } from "../constants/actionTypes.js";
 import * as api from "../api/index.js";
 
@@ -17,25 +17,25 @@ export const fetchOrders = () => async (dispatch) => {
     console.log(error);
   }
 };
-// export const fetchOrderById = (id) => async (dispatch) => {
-//   try {
-//     const { data } = await api.fetchOrderById(id);
-//     console.log(data);
-//     dispatch({ type: FETCH_ORDER_BY_ID, payload: data });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+export const fetchOrderByEmail = (email) => async (dispatch) => {
+  try {
+    const { data } = await api.fetchOrderByEmail(email);
+    console.log(data);
+    dispatch({ type: FETCH_ORDER_BY_EMAIL, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-// export const deleteOrder = (id) => async (dispatch) => {
-//   try {
-//     await api.deleteOrder(id);
+export const deleteOrder = (id) => async (dispatch) => {
+  try {
+    await api.deleteOrder(id);
 
-//     dispatch({ type: DELETE_ORDER, payload: id });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+    dispatch({ type: DELETE_ORDER, payload: id });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const addOrder = (orderData) => async (dispatch) => {
   try {
@@ -47,14 +47,14 @@ export const addOrder = (orderData) => async (dispatch) => {
   }
 };
 
-// export const updateOrder = (id, updatedOrderData) => async (dispatch) => {
-//   try {
-//     const { data } = await api.updateOrder(id, updatedOrderData);
-//     dispatch({ type: UPDATE_ORDER, payload: data });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+export const updateOrder = (id, updatedOrderData) => async (dispatch) => {
+  try {
+    const { data } = await api.updateOrder(id, updatedOrderData);
+    dispatch({ type: UPDATE_ORDER, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 // export const updateDetails = (id, updatedProductData) => async (dispatch) => {
 //   try {

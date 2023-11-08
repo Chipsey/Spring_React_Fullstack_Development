@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,8 +27,8 @@ public class OrderService {
         return orderRepository.findById(id);
     }
 
-    public List<Order> getOrdersByCustomerEmail(String email) {
-        return orderRepository.findByCustomerEmail(email);
+    public List<Order> getOrdersByCustomerEmail(String customerEmail) {
+        return orderRepository.findByCustomerEmail(customerEmail);
     }
 
 
@@ -37,38 +38,57 @@ public class OrderService {
     }
 
     public void deleteOrder(Long id) {
-        Boolean exists = orderRepository.existsById(id);
+        boolean exists = orderRepository.existsById(id);
         if(!exists) {
             throw new IllegalStateException("Order with id: " + id + " does not exist");
         }
         orderRepository.deleteById(id);
     }
 
-//    @Transactional
-//    public void updateOrder(Long inventoryId, String inventoryName, double price, String quantity, List<String> imageUrls) {
-//        Inventory inventory = inventoryRepository.findById(inventoryId)
-//                .orElseThrow(() -> new IllegalStateException("Inventory with id: " + inventoryId + " does not exist"));
-//
-//        if (inventoryName != null && !inventoryName.isEmpty() && !Objects.equals(inventory.getName(), inventoryName)) {
-//            // Check if the updated name is already in use
-//            Optional<Inventory> inventoryWithSameName = inventoryRepository.findInventoryByName(inventoryName);
-//            if (inventoryWithSameName.isPresent()) {
-//                throw new IllegalArgumentException("Name is already in use!");
-//            }
-//            inventory.setName(inventoryName);
-//        }
-//
-//        if (price > 0.00 && !Objects.equals(inventory.getPrice(), price)) {
-//            inventory.setPrice((long) price);
-//        }
-//
-//        if (quantity != null && !quantity.isEmpty()) {
-//            // Convert the quantity to a long
-//            long newQuantity = Long.parseLong(quantity);
-//            if (newQuantity > 0 && !Objects.equals(inventory.getQuantity(), newQuantity)) {
-//                inventory.setQuantity(newQuantity);
-//            }
-//        }
-//        inventory.setImageUrls(imageUrls);
-//    }
+    @Transactional
+    public void updateOrder(Long orderId, Order order) {
+        Order existingOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalStateException("Inventory with id: " + orderId + " does not exist"));
+
+        Date currentDate = new Date();
+        if (order.getQuantity() != 0) {
+
+            if (order.getQuantity() > 0 && !Objects.equals(existingOrder.getQuantity(), order.getQuantity())) {
+                long newTotalPrice = order.getQuantity() * existingOrder.getUnitPrice();
+
+                existingOrder.setTotalPrice(newTotalPrice);
+                existingOrder.setQuantity(order.getQuantity());
+            }
+        }
+
+        if(order.isApproved()) {
+            existingOrder.setApproved(true);
+            existingOrder.setApprovalDate(currentDate);
+        }
+
+        if(order.isPacked()) {
+            existingOrder.setPacked(true);
+            existingOrder.setPackedDate(currentDate);
+        }
+
+        if(order.isDeliveryStart()) {
+            existingOrder.setDeliveryStart(true);
+            existingOrder.setDeliveryPerson(order.getDeliveryPerson());
+            existingOrder.setDeliveryPersonId(order.getDeliveryPersonId());
+            existingOrder.setDeliveryStartDate(currentDate);
+        }
+
+        if(order.isDelivered()) {
+            existingOrder.setDelivered(true);
+            existingOrder.setDeliveredDate(currentDate);
+        }
+
+        if(order.isDeliveryApproved()) {
+            existingOrder.setDeliveryApproved(true);
+        }
+
+        if(order.isCancelled()) {
+            existingOrder.setCancelled(true);
+        }
+    }
 }

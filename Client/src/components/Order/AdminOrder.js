@@ -1,14 +1,6 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Typography,
-  Grid,
-  Container,
-  Box,
-  TextField,
-  Button,
-} from "@mui/material";
+import { Grid } from "@mui/material";
 
 import "./styles.css";
 
@@ -21,7 +13,7 @@ import Loading from "../Loading/Loading";
 import { fetchOrders } from "../../actions/order";
 import OrderCard from "./OrderCard";
 
-const Order = () => {
+const AdminOrder = () => {
   const dispatch = useDispatch();
 
   const userData = useSelector((state) => state.auth.authData);
@@ -31,8 +23,27 @@ const Order = () => {
     dispatch(fetchOrders());
   }, [dispatch]);
 
-  if (!ordersData) {
+  const isSignup = userData !== null ? true : false;
+
+  if (!ordersData[0]) {
     return <Loading />;
+  }
+  if (!isSignup) {
+    return (
+      <div>
+        <Loading />
+        <div
+          style={{
+            marginTop: "20px",
+            fontSize: "30px",
+            fontFamily: "playlist",
+            color: "green",
+          }}
+        >
+          Sign In First!
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -62,8 +73,12 @@ const Order = () => {
               <Grid item xs={12}>
                 <OrderCard
                   id={order.id}
+                  userName={userData.name}
+                  userId={userData.id}
                   productId={order.productId}
                   productName={order.productName}
+                  customerEmail={order.customerEmail}
+                  deliveryApproved={order.deliveryApproved}
                   unitPrice={order.unitPrice}
                   totalPrice={order.totalPrice}
                   quantity={order.quantity}
@@ -75,8 +90,10 @@ const Order = () => {
                   packedDate={order.packedDate}
                   deliveryStartDate={order.deliveryStartDate}
                   approved={order.approved}
+                  cancelled={order.cancelled}
                   packed={order.packed}
                   delivered={order.delivered}
+                  userRole={userData.role}
                   deliveryStart={order.deliveryStart}
                   deliveredDate={order.deliveredDate}
                 />
@@ -89,4 +106,4 @@ const Order = () => {
   );
 };
 
-export default Order;
+export default AdminOrder;

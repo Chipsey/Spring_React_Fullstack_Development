@@ -49,8 +49,14 @@ export const updateDetails = (id, updatedProductData) =>
 export const addDiscount = (id, discountData) =>
   API.post(`http://localhost:8080/products/addDscount/${id}`, discountData);
 
+//Order
 export const addOrder = (orderData) =>
   API.post("http://localhost:8082/api/v1/order/add", orderData);
-
 export const fetchOrders = () =>
   API.get("http://localhost:8082/api/v1/order/all");
+export const fetchOrderByEmail = (userEmail) =>
+  API.get(`http://localhost:8082/api/v1/order/fetch-by-email/${userEmail}`);
+export const updateOrder = (id, updatedOrderData) =>
+  API.put(`http://localhost:8082/api/v1/order/update/${id}`, updatedOrderData);
+export const deleteOrder = (id) =>
+  API.delete(`http://localhost:8082/api/v1/order/delete/${id}`);

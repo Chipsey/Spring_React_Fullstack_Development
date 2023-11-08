@@ -31,9 +31,9 @@ public class OrderController {
     }
 
 
-    @GetMapping("/fetch-by-cid/{email}")
-    public List<Order> getOrdersByCustomerEmail(@PathVariable String email) {
-        return orderService.getOrdersByCustomerEmail(email);
+    @GetMapping("/fetch-by-email/{customerEmail}")
+    public List<Order> getOrdersByCustomerEmail(@PathVariable String customerEmail) {
+        return orderService.getOrdersByCustomerEmail(customerEmail);
     }
 
     @PostMapping("/add")
@@ -56,9 +56,19 @@ public class OrderController {
         orderService.deleteOrder(orderId);
     }
 
-//    @PutMapping("/update/{inventoryId}")
-//    public void updateInventory(@PathVariable("inventoryId") Long inventoryId,
-//                              @RequestBody Inventory inventory) {
-//        inventoryService.updateInventory(inventoryId, inventory.getName(), inventory.getPrice(), String.valueOf(inventory.getQuantity()), inventory.getImageUrls());
-//    }
+    @PutMapping("/update/{orderId}")
+    public void updateOrder(@PathVariable("orderId") Long orderId,
+                              @RequestBody Order order) {
+        try {
+            String inventoryUrl = "http://localhost:8081/api/v1/inventory/update-order";
+            restTemplate.postForEntity(inventoryUrl, order, Long.class);
+        } catch (RestClientException e) {
+            System.out.println("RestClientException: " + e.toString());
+            return;
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.toString());
+            return;
+        }
+        orderService.updateOrder(orderId, order);
+    }
 }
