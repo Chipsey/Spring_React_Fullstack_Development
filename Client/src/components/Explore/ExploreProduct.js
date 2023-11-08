@@ -56,12 +56,6 @@ const ImageCarousel = () => {
   }
 
   const handleSubmit = () => {
-    // setFormData({
-    //   ...formData,
-    //   productId: product.id,
-    //   customerId: userData.id,
-    //   address: userData.address,
-    // });
     dispatch(addOrder(formData));
   };
 

@@ -2,6 +2,7 @@ import {
   ADD_ORDER,
   DELETE_ORDER,
   FETCH_ORDERS,
+  FETCH_ORDER_BY_EMAIL,
   UPDATE_ORDER,
 } from "../constants/actionTypes";
 
@@ -26,6 +27,11 @@ const order = (state = initialState, action) => {
       };
 
     case FETCH_ORDERS:
+      return {
+        ...state,
+        orders: action.payload,
+      };
+    case FETCH_ORDER_BY_EMAIL:
       return {
         ...state,
         orders: action.payload,

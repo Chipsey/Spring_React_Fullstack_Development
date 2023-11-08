@@ -17,6 +17,7 @@ public class AuthenticationResponse {
     private String email;
     private String role;
     private String address;
+    private Integer id;
 
     public void setName(String s) {
         this.name = s;

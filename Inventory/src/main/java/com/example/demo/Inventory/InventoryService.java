@@ -85,4 +85,13 @@ public class InventoryService {
 
         inventory.setQuantity(newQuantity);
     }
+
+    @Transactional
+    public void updateOrder(OrderRequest orderRequest) {
+        Inventory inventory = inventoryRepository.findById(orderRequest.getProductId())
+                .orElseThrow(() -> new IllegalStateException("Inventory with id: " + orderRequest.getProductId() + " does not exist"));
+
+        long newQuantity = inventory.getQuantity() + orderRequest.getOldQuantity() - orderRequest.getQuantity();
+        inventory.setQuantity(newQuantity);
+    }
 }

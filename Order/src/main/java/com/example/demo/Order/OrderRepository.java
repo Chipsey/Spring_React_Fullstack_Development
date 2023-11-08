@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    @Query("SELECT o FROM Order o WHERE o.customerEmail = ?1")
-    List<Order> findByCustomerEmail(String email);
+    @Query("SELECT o FROM Order o WHERE o.customerEmail LIKE ?1 ORDER BY o.id DESC")
+    List<Order> findByCustomerEmail(String customerEmail);
 }

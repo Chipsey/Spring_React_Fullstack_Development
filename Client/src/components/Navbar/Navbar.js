@@ -202,7 +202,11 @@ const Navbar = () => {
               alignItems: "center", // Center horizontally
             }}
           >
-            <Item to={userData.role === "ADMIN" ? "addproductdetails" : "orders"}>
+            <Item
+              to={
+                userData.role === "ADMIN" ? "addproductdetails" : "user-orders"
+              }
+            >
               <ShoppingCartIcon
                 style={{ marginRight: "5px", color: "black", fontSize: "15px" }}
               />
@@ -244,7 +248,14 @@ const Navbar = () => {
                   <Link to="profile" style={{ textDecoration: "none" }}>
                     <DropdownItem>Profile</DropdownItem>
                   </Link>
-                  <DropdownItem>Orders</DropdownItem>
+                  <Link
+                    to={
+                      userData.role === "USER" ? "user-orders" : "admin-orders"
+                    }
+                    style={{ textDecoration: "none" }}
+                  >
+                    <DropdownItem>Orders</DropdownItem>
+                  </Link>
                   <DropdownItem onClick={logout}>Logout</DropdownItem>
                 </DropdownContent>
               </IconItem>

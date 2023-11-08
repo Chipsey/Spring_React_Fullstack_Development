@@ -52,4 +52,9 @@ public class InventoryController {
     public void addNewOrder(@RequestBody OrderRequest orderRequest) {
         inventoryService.addNewOrder(orderRequest);
     }
+
+    @PostMapping("/update-order")
+    public void updateOrder(@RequestBody OrderRequest orderRequest) {
+        inventoryService.updateOrder(orderRequest);
+    }
 }
