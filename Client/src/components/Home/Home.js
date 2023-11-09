@@ -23,6 +23,8 @@ import "./style.css";
 import Loading from "../Loading/Loading";
 import { Link } from "react-router-dom";
 import ConsoleTextAnimation from "./ConsoleTextAnimation";
+import DeliverExploreOrder from "../Explore/ExploreOrders";
+import AdminOrder from "../Order/AdminOrder";
 
 const Item = styled("div")(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -45,6 +47,7 @@ const VideoPlayer = ({ videoSource }) => {
 const Home = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
+  const userData = useSelector((state) => state.auth.authData);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // Number of items to display per page
@@ -126,7 +129,10 @@ const Home = () => {
           </div>
         </Grid>
       </Grid>
-      <Grid container spacing={2}>
+      {userData?.role === "DELIVERY" && <DeliverExploreOrder />}
+      {userData?.role === "ADMIN" && <AdminOrder />}
+
+      {/* <Grid container spacing={2}>
         <Grid item xs={12} style={{ textAlign: "left" }}>
           <VideoPlayer videoSource="video1.mp4" />
           <div
@@ -178,7 +184,7 @@ const Home = () => {
             </Link>
           </div>
         </Grid>
-      </Grid>
+      </Grid> */}
       <Grid container spacing={2}>
         <Grid item xs={12}></Grid>
         <Grid container spacing={2}>
