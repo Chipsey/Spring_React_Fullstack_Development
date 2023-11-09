@@ -54,8 +54,12 @@ export const addOrder = (orderData) =>
   API.post("http://localhost:8082/api/v1/order/add", orderData);
 export const fetchOrders = () =>
   API.get("http://localhost:8082/api/v1/order/all");
+export const fetchOpenOrders = () =>
+  API.get("http://localhost:8082/api/v1/order/open");
 export const fetchOrderByEmail = (userEmail) =>
   API.get(`http://localhost:8082/api/v1/order/fetch-by-email/${userEmail}`);
+export const fetchOrderByDeliverId = (id) =>
+  API.get(`http://localhost:8082/api/v1/order/fetch-by-deliver-id/${id}`);
 export const updateOrder = (id, updatedOrderData) =>
   API.put(`http://localhost:8082/api/v1/order/update/${id}`, updatedOrderData);
 export const deleteOrder = (id) =>

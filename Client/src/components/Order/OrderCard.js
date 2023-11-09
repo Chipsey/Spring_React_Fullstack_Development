@@ -63,6 +63,18 @@ const OrderCard = ({
     deliveredDate,
   };
 
+  const formatDateTime = (dateTimeString) => {
+    const dateObject = new Date(dateTimeString);
+    const year = dateObject.getFullYear();
+    const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
+    const date = dateObject.getDate().toString().padStart(2, "0");
+    const hours = dateObject.getHours().toString().padStart(2, "0");
+    const minutes = dateObject.getMinutes().toString().padStart(2, "0");
+    const seconds = dateObject.getSeconds().toString().padStart(2, "0");
+
+    return `${year}-${month}-${date} • ${hours}:${minutes}:${seconds}`;
+  };
+
   const [isEditModalOpen, setEditModalOpen] = useState(false);
 
   const handleEditClick = () => {
@@ -105,6 +117,12 @@ const OrderCard = ({
     dispatch(updateOrder(id, updatedOrder));
   };
 
+  const [showDetails, setShowDetails] = useState(false);
+
+  const handleToggleDetails = () => {
+    setShowDetails(!showDetails);
+  };
+
   return (
     <Card
       sx={{
@@ -125,25 +143,65 @@ const OrderCard = ({
         >
           <span style={{ color: "grey" }}>#{id}</span> • {productName}
         </Typography>
-        <Typography
-          variant="body2"
-          style={{ fontWeight: "500", color: "grey" }}
-        >
-          Customer Email: {customerEmail}
-        </Typography>
-        <Typography sx={{ mb: 0.5 }} color="text.secondary">
-          Product ID: {productId}
-        </Typography>
-        <Typography variant="body2">
-          Unit Price: LKR {unitPrice}.00 | Quantity: {quantity}
-          <br />
-          <span style={{ fontWeight: "500", fontSize: "20px" }}>
-            Total Price: LKR {totalPrice}.00
-          </span>
-          <br />
-          Delivery Information: {address} <br />
-          Order Placed: {orderDate}
-        </Typography>
+
+        <div style={{ display: "flex" }}>
+          <div>
+            <Typography
+              variant="body2"
+              style={{ fontWeight: "500", color: "grey" }}
+            >
+              Customer Email: {customerEmail} <br />
+              Customer Name: {userName}
+            </Typography>
+            <Typography sx={{ mb: 0.5 }} color="text.secondary">
+              Product ID: {productId}
+            </Typography>
+            <Typography variant="body2">
+              Unit Price: LKR {unitPrice}.00 | Quantity: {quantity}
+              <br />
+              <span style={{ fontWeight: "500", fontSize: "20px" }}>
+                Total Price: LKR {totalPrice}.00
+              </span>
+              <br />
+              Delivery Address: {address} <br />
+              Order Placed: {formatDateTime(orderDate)}
+            </Typography>
+            <Button
+              style={{
+                background: "grey",
+                color: "white",
+                fontSize: "10px",
+                marginTop: "10px",
+              }}
+              onClick={handleToggleDetails}
+            >
+              MORE
+            </Button>
+          </div>
+          <div
+            style={{
+              marginLeft: "20%",
+              display: showDetails ? "flex" : "none",
+            }}
+          >
+            <Typography variant="body2">
+              {approved && `Order Approved : ${formatDateTime(approvalDate)}`}{" "}
+              <br />
+              {packed && `Order Packed : ${formatDateTime(packedDate)}`}
+              <br />
+              <span style={{ fontWeight: "500", fontSize: "20px" }}>
+                {deliveryStart &&
+                  `Order Shipped : ${formatDateTime(deliveryStart)}`}
+              </span>
+              <br />
+              {deliveryStart &&
+                `Delivery Information: #${deliveryPersonId} • ${deliveryPerson}`}
+              <br />
+              {delivered &&
+                `Order Delivered : ${formatDateTime(deliveredDate)}`}
+            </Typography>
+          </div>
+        </div>
       </CardContent>
       <CardActions>
         {cancelled && (
@@ -193,19 +251,15 @@ const OrderCard = ({
           <Button
             size="small"
             onClick={handleApproveDeliveryClick}
-            style={{ color: "green" }}
+            style={{
+              color: "black",
+              backgroundColor: "gold",
+              fontSize: "10px",
+              padding: "5px 10px",
+              fontWeight: "600",
+            }}
           >
             Approve delivery
-          </Button>
-        )}
-        {delivered && (
-          <Button
-            variant="disabled"
-            size="small"
-            onClick={handleApproveDeliveryClick}
-            style={{ color: "green" }}
-          >
-            Order delivered
           </Button>
         )}
       </CardActions>
@@ -219,7 +273,7 @@ const OrderCard = ({
               borderRadius: "0px",
             }}
           >
-            PENDING APPROVED
+            ORDER APPROVED
           </Button>
           <Button
             variant="disabled"
@@ -239,7 +293,7 @@ const OrderCard = ({
               borderRadius: "0px",
             }}
           >
-            SHIPPED
+            PACKAGE SHIPPED
           </Button>
           <Button
             variant="disabled"
@@ -249,7 +303,7 @@ const OrderCard = ({
               borderRadius: "0px",
             }}
           >
-            ENJOY THE PACKAGE
+            RATE DELIVERY
           </Button>
           <Button
             variant="disabled"

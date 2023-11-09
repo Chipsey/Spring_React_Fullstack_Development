@@ -27,6 +27,24 @@ export const fetchOrderByEmail = (email) => async (dispatch) => {
   }
 };
 
+export const fetchOrderByDeliverId = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.fetchOrderByDeliverId(id);
+    dispatch({ type: FETCH_ORDER_BY_EMAIL, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const fetchOpenOrders = () => async (dispatch) => {
+  try {
+    const { data } = await api.fetchOpenOrders();
+    dispatch({ type: FETCH_ORDER_BY_EMAIL, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const deleteOrder = (id) => async (dispatch) => {
   try {
     await api.deleteOrder(id);

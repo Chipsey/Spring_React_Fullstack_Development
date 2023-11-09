@@ -20,10 +20,14 @@ public class OrderService {
     }
 
     public List<Order> getOrders() {
-        return orderRepository.findAll();
+        return orderRepository.fetchAllOrders();
     }
 
-    public Optional<Order> getOrderbyId(Long id) {
+    public List<Order> getOpenOrders() {
+        return orderRepository.fetchOpenOrders();
+    }
+
+    public Optional<Order> getOrderById(Long id) {
         return orderRepository.findById(id);
     }
 
@@ -31,10 +35,12 @@ public class OrderService {
         return orderRepository.findByCustomerEmail(customerEmail);
     }
 
+    public List<Order> getOrdersByDeliverId(Long id) {
+        return orderRepository.findAllByDeliverId(id);
+    }
 
     public void addNewOrder(Order order) {
         orderRepository.save(order);
-//        System.out.println(order);
     }
 
     public void deleteOrder(Long id) {

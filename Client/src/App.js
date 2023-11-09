@@ -12,6 +12,8 @@ import AddProductDiscount from "./components/AddDiscount/AddProductDiscount";
 import Users from "./components/Auth/Users";
 import AdminOrder from "./components/Order/AdminOrder";
 import UserOrder from "./components/Order/UserOrder";
+import DeliverExploreOrder from "./components/Explore/ExploreOrders";
+import DeliverOrder from "./components/Order/DeliverOrders";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
           <Route path="/manage-users" element={<Users />} />
           <Route path="/admin-orders" element={<AdminOrder />} />
           <Route path="/user-orders" element={<UserOrder />} />
+          <Route path="/deliver-orders" element={<DeliverOrder />} />
+          <Route path="/explore-orders" element={<DeliverExploreOrder />} />
         </Routes>
       </Router>
     </div>

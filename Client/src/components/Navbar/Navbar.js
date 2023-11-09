@@ -113,6 +113,34 @@ const Navbar = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const role = userData?.role;
+
+  const renderComponentOrder = () => {
+    switch (role) {
+      case "ADMIN":
+        return "addproductdetails";
+      case "DELIVERY":
+        return "deliver-orders";
+      default:
+        return "user-orders";
+    }
+  };
+
+  const componentToRenderOrder = renderComponentOrder();
+
+  const renderComponentExplore = () => {
+    switch (role) {
+      case "ADMIN":
+        return "manage-users";
+      case "DELIVERY":
+        return "explore-orders";
+      default:
+        return "explore";
+    }
+  };
+
+  const componentToRenderExplore = renderComponentExplore();
+
   return (
     <Box
       sx={{
@@ -182,7 +210,7 @@ const Navbar = () => {
               alignItems: "center", // Center horizontally
             }}
           >
-            <Item to={userData.role === "ADMIN" ? "manage-users" : "explore"}>
+            <Item to={componentToRenderExplore}>
               <ExploreIcon
                 style={{ marginRight: "5px", color: "black", fontSize: "15px" }}
               />
@@ -202,11 +230,7 @@ const Navbar = () => {
               alignItems: "center", // Center horizontally
             }}
           >
-            <Item
-              to={
-                userData.role === "ADMIN" ? "addproductdetails" : "user-orders"
-              }
-            >
+            <Item to={componentToRenderOrder}>
               <ShoppingCartIcon
                 style={{ marginRight: "5px", color: "black", fontSize: "15px" }}
               />
@@ -245,17 +269,14 @@ const Navbar = () => {
                 </span>
                 {!isDropdownOpen ? <ArrowDropDownIcon /> : <ArrowDropUpIcon />}
                 <DropdownContent className={isDropdownOpen ? "show" : ""}>
-                  <Link to="profile" style={{ textDecoration: "none" }}>
+                  {/* <Link to="profile" style={{ textDecoration: "none" }}>
                     <DropdownItem>Profile</DropdownItem>
-                  </Link>
-                  <Link
-                    to={
-                      userData.role === "USER" ? "user-orders" : "admin-orders"
-                    }
-                    style={{ textDecoration: "none" }}
-                  >
-                    <DropdownItem>Orders</DropdownItem>
-                  </Link>
+                  </Link> */}
+                  {userData.role === "ADMIN" && (
+                    <Link to="admin-orders" style={{ textDecoration: "none" }}>
+                      <DropdownItem>Orders</DropdownItem>
+                    </Link>
+                  )}
                   <DropdownItem onClick={logout}>Logout</DropdownItem>
                 </DropdownContent>
               </IconItem>
